@@ -1,25 +1,33 @@
 import { useState } from 'react';
 
-function UpdateModal({ id, isVisible, handleBookUpdate }) {
+function UpdateModal({ bookID, isUpdateModalVisible, handleUpdateModalToggle, handleBookListUpdate }) {
+    const [bookName, setBookName] = useState('');
     const [updatedBook, setUpdatedBook] = useState({
-        id: id,
+        id: 0,
         title: ''
     });
 
-    console.log('UpdateModal fired');
-
-    const handleChange = (e) => {
-        // do change
+    const handleClick = () => {
+        console.log(`*** ${bookID} ***`);
+        handleBookListUpdate({
+            id: bookID,
+            title: bookName
+        });
+        setBookName('');
     };
 
-    const handleClick = (e) => {
-        // submit new title 
-        //handleBookUpdate();
+    const handleChange = (e) => {
+        setBookName(e.target.value);
+    };
+
+    const toggleModalVisibility = (e) => {
+        handleUpdateModalToggle();
     };
 
     return (
-        <div className="update-modal">
+        <div data-id={bookID} className="update-modal" style={{ display: (isUpdateModalVisible ? 'flex' : 'none') }}>
             <div className="update-modal-inner">
+                <a href="#" className="close" onClick={toggleModalVisibility}>X</a>
                 <section id="book-update-form" className="level">
                     <div className="level-left">
                         <div className="level-item">
@@ -29,10 +37,10 @@ function UpdateModal({ id, isVisible, handleBookUpdate }) {
                         <div className="level-item">
                             <div className="field has-addons">
                                 <p className="control">
-                                    <input value={updatedBook.title} onChange={handleChange} type="text" className="input" placeholder="Enter Book Title" />
+                                    <input value={bookName} onChange={handleChange} type="text" className="input" placeholder="Enter Book Title" />
                                 </p>
                                 <p className="control">
-                                    <button onClick={handleClick} className="button">Add Book</button>
+                                    <button onClick={handleClick} className="button">Update Book</button>
                                 </p>
                             </div>
                         </div>

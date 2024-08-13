@@ -1,31 +1,32 @@
 function Book({ book, handleBookListUpdate, handleBookListDelete }) {
 
-    console.log('book');
-    console.log(book);
-
     const handleBookEdit = (e) => {
         // handle click of the edit anchor here
-        console.log('handleBookEdit');
-        console.log(e.target.attributes.bookid.value);
-        handleBookListUpdate(e.target.attributes.bookid.value);
+        const bookEditObj = {
+            id: e.target.attributes.bookid.value,
+            title: e.target.attributes.booktitle.value,
+        };
+        handleBookListUpdate(bookEditObj);
     };
 
     const handleBookDelete = (e) => {
         // handle click of the delete anchor here
-        console.log('handleBookDelete');
-        console.log(e.target.attributes.bookid);
-        handleBookListDelete(e.target.attributes.bookid.value);
+        const bookDelObj = {
+            id: e.target.attributes.bookid.value,
+            title: e.target.attributes.booktitle.value,
+        };
+        handleBookListDelete(bookDelObj);
     };
 
     return (
         <div className="book cell">
             <div className="">
                 <p className="book-action-container">
-                    <a bookid={book.id} onClick={handleBookEdit} title="Edit" className="book-action book-action-update book-action-text">
+                    <a bookid={book.id} booktitle={book.title} onClick={handleBookEdit} title="Edit" className="book-action book-action-update book-action-text">
                         Edit
                     </a>
                     &nbsp;
-                    <a bookid={book.id} onClick={handleBookDelete} title="Delete" className="book-action book-action-delete book-action-text">
+                    <a bookid={book.id} booktitle={book.title} onClick={handleBookDelete} title="Delete" className="book-action book-action-delete book-action-text">
                         X
                     </a>
                 </p>
