@@ -19,11 +19,22 @@ export const handler = async (event) => {
         'Content-Type': 'application/json',
     };
     const eventBody = JSON.parse(event.body);
+    const bookID = eventBody.bookID;
+    const title = eventBody.title;
+    let dbCommand;
 
     try {
         switch (event.httpMethod) {
             case 'DELETE':
-                body = await dynamo.delete(JSON.parse(event.body));
+                dbCommand = new DeleteItemCommand({
+                    TableName: TABLENAME,
+                    Key: {
+                        BookID: {
+                            S: bookID
+                        },
+                    }
+                });
+                body = await client.send(dbCommand);
                 break;
             case 'GET':
                 body = await dynamo.scan({ TableName: event.queryStringParameters.TableName });
@@ -32,17 +43,14 @@ export const handler = async (event) => {
                 // For more information about data types,
                 // see https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes and
                 // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.LowLevelAPI.html#Programming.LowLevelAPI.DataTypeDescriptors
-                const bookID = eventBody.bookID;
-                const title = eventBody.title;
-                const command = new PutItemCommand({
+                dbCommand = new PutItemCommand({
                     TableName: TABLENAME,
                     Item: {
                         BookID: { S: bookID },
                         Title: { S: title },
                     },
                 });
-
-                body = await client.send(command);
+                body = await client.send(dbCommand);
                 break;
             case 'PUT':
                 body = await dynamo.update(JSON.parse(event.body));
