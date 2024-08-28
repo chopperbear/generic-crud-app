@@ -53,7 +53,15 @@ export const handler = async (event) => {
                 body = await client.send(dbCommand);
                 break;
             case 'PUT':
-                body = await dynamo.update(JSON.parse(event.body));
+                // PutItemCommand will replace item if it exists
+                dbCommand = new PutItemCommand({
+                    TableName: TABLENAME,
+                    Item: {
+                        BookID: { S: bookID },
+                        Title: { S: title },
+                    },
+                });
+                body = await client.send(dbCommand);
                 break;
             default:
                 throw new Error(`Unsupported method "${event.httpMethod}"`);
