@@ -1,4 +1,4 @@
-import { DynamoDBClient, UpdateItemCommand, GetItemCommand, PutItemCommand, DeleteItemCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, UpdateItemCommand, ScanCommand, PutItemCommand, DeleteItemCommand } from '@aws-sdk/client-dynamodb';
 //import { DynamoDBDocumentClient, } from '@aws-sdk/lib-dynamodb';
 
 const client = new DynamoDBClient({});
@@ -37,12 +37,12 @@ export const handler = async (event) => {
                 body = await client.send(dbCommand);
                 break;
             case 'GET':
-                body = await dynamo.scan({ TableName: event.queryStringParameters.TableName });
+                dbCommand = new ScanCommand({
+                    TableName: TABLENAME
+                });
+                body = await client.send(dbCommand);
                 break;
             case 'POST':
-                // For more information about data types,
-                // see https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes and
-                // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Programming.LowLevelAPI.html#Programming.LowLevelAPI.DataTypeDescriptors
                 dbCommand = new PutItemCommand({
                     TableName: TABLENAME,
                     Item: {
